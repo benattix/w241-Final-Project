@@ -1,0 +1,26 @@
+---
+title: "Final"
+author: "Ben Attix"
+date: "4/1/2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(plyr)
+setwd("~/Desktop/w241-Final-Project/")
+```
+
+```{r}
+df = read.csv("qualtrics_data.csv", skip = 1 )
+
+# set earliest date of acceptable data
+cutoff_date = strftime("2017-03-29 0:0:0", "%Y-%m-%d %H:%M:%S")
+
+#remove all data before cutoff date
+df = df[strptime(df$StartDate, "%Y-%m-%d %H:%M:%S") > cutoff_date, ]
+
+# counts for control and treatment groups
+n.control = length(df$total_tip[df$total_tip > 0])
+n.treatment = length(df$total_no_tip[df$total_no_tip > 0])
+```
+
