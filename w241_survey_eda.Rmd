@@ -1,26 +1,77 @@
 ---
 title: "Final"
 author: "Ben Attix"
-date: "4/1/2017"
+date: "4/23/2017"
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-library(plyr)
 setwd("~/Desktop/w241-Final-Project/")
 ```
 
 ```{r}
-df = read.csv("qualtrics_data.csv", skip = 1 )
+# READING IN DATA & COUNTS
+df = read.csv("DataforAnalysis2.csv")
 
-# set earliest date of acceptable data
-cutoff_date = strftime("2017-03-29 0:0:0", "%Y-%m-%d %H:%M:%S")
-
-#remove all data before cutoff date
-df = df[strptime(df$StartDate, "%Y-%m-%d %H:%M:%S") > cutoff_date, ]
+# DON'T NEED CUTOFF DATE ANYMORE - WAS HANDLED BEFORE DATASET WAS LOADED
+  # set earliest date of acceptable data
+  #cutoff_date = strftime("2017-04-03 0:0:0", "%Y-%m-%d %H:%M:%S")
+  #remove all data before cutoff date
+  #df = df[strptime(df$StartDate, "%Y-%m-%d %H:%M:%S") > cutoff_date, ]
 
 # counts for control and treatment groups
 n.control = length(df$total_tip[df$total_tip > 0])
 n.treatment = length(df$total_no_tip[df$total_no_tip > 0])
 ```
+
+### Create new variables which contain orders for everybody
+```{r}
+# Q7 and Q31 - Meals
+df$meal_ordered = ifelse(df$Q7 == "", df$Q31, df$Q7)
+levels(df$meal_ordered) = levels(df$Q7)
+
+# Q16 and Q30 - Beverages
+df$drink_ordered = ifelse(df$Q16 == "", df$Q30, df$Q16)
+levels(df$drink_ordered) = levels(df$Q16)
+```
+
+### Add dummy variables
+```{r}
+# Q2
+df$Q2_family = ifelse(grepl("Family", df$Q2, ignore.case = T), 1, 0)
+df$Q2_friends = ifelse(grepl("Friends", df$Q2, ignore.case = T), 1, 0)
+df$Q2_alone = ifelse(grepl("alone", df$Q2, ignore.case = T), 1, 0)
+df$Q2_spouse = ifelse(grepl("Spouse", df$Q2, ignore.case = T), 1, 0)
+df$Q2_colleague = ifelse(grepl("Colleagues", df$Q2, ignore.case = T), 1, 0)
+
+# Q3
+df$Q3_mainCourse = ifelse(grepl("Main", df$Q3, ignore.case = T), 1, 0)
+df$Q3_appetizer = ifelse(grepl("Appetizer", df$Q3, ignore.case = T), 1, 0)
+df$Q3_dessert = ifelse(grepl("Dessert", df$Q3, ignore.case = T), 1, 0)
+
+# Q4
+df$Q4_water = ifelse(grepl("Water", df$Q4, ignore.case = T), 1, 0)
+df$Q4_non_alc = ifelse(grepl("beverages", df$Q4, ignore.case = T), 1, 0)
+df$Q4_beer = ifelse(grepl("beer", df$Q4, ignore.case = T), 1, 0)
+df$Q4_cocktail = ifelse(grepl("Cocktail", df$Q4, ignore.case = T), 1, 0)
+df$Q4_wine = ifelse(grepl("Wine", df$Q4, ignore.case = T), 1, 0)
+
+# Meal Ordered
+df$m_order_duck = ifelse(df$meal_ordered == 2, 1, 0)
+df$m_order_fettuccine = ifelse(df$meal_ordered == 3, 1, 0)
+df$m_order_fish = ifelse(df$meal_ordered == 4, 1, 0)
+df$m_order_pizza = ifelse(df$meal_ordered == 5, 1, 0)
+df$m_order_pork = ifelse(df$meal_ordered == 6, 1, 0)
+
+# Drink ordered
+df$d_order_water = ifelse(df$meal_ordered == 2, 1, 0)
+df$d_order_craftbeer = ifelse(df$meal_ordered == 3, 1, 0)
+df$d_order_macrobeer = ifelse(df$meal_ordered == 4, 1, 0)
+df$d_order_wine = ifelse(df$meal_ordered == 5, 1, 0)
+df$d_order_cocktail = ifelse(df$meal_ordered == 6, 1, 0)
+
+```
+
+
+
 
