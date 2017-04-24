@@ -7,6 +7,14 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 setwd("~/Desktop/w241-Final-Project/")
+library(foreign)
+library(data.table)
+library(AER)
+library(stargazer)
+library(DataCombine)
+library(lmtest)
+library(sandwich)
+library(lattice)
 ```
 
 ```{r}
@@ -23,8 +31,9 @@ df = read.csv("DataforAnalysis2.csv")
 n.control = length(df$total_tip[df$total_tip > 0])
 n.treatment = length(df$total_no_tip[df$total_no_tip > 0])
 ```
+# Transformations
 
-### Create new variables which contain orders for everybody
+### Create new variables which contains values for both treatment and control
 ```{r}
 # Q7 and Q31 - Meals
 df$meal_ordered = ifelse(df$Q7 == "", df$Q31, df$Q7)
@@ -33,10 +42,29 @@ levels(df$meal_ordered) = levels(df$Q7)
 # Q16 and Q30 - Beverages
 df$drink_ordered = ifelse(df$Q16 == "", df$Q30, df$Q16)
 levels(df$drink_ordered) = levels(df$Q16)
+
+# Q8 and Q35 - Reasonable Score
+df$reasonable = ifelse(df$Q8 == "", df$Q35, df$Q8)
+
+# recode so that 1=Extremely unreasonable and 5=Extremely reasonable
+## it is originally ordered alphabetically
+df$reasonable = recode(df$reasonable, "2=5; 3=1; 4=3; 5=4; 6=2")
+levels(df$reasonable) = c("Extremely unreasonable",
+                          "Somewhat unreasonable",
+                          "Neither reasonable nor unreasonable",
+                          "Somewhat reasonable",
+                          "Extremely reasonable")
 ```
 
 ### Add dummy variables
 ```{r}
+# Treatment flag
+df$treat = ifelse(df$total_no_tip > 0, 1, 0)
+levels(df$treat) = c("Control", "Treatment")
+
+# Rename tip variable
+names(df)[names(df) == "Q23"] = "tip" 
+  
 # Q2
 df$Q2_family = ifelse(grepl("Family", df$Q2, ignore.case = T), 1, 0)
 df$Q2_friends = ifelse(grepl("Friends", df$Q2, ignore.case = T), 1, 0)
@@ -57,21 +85,27 @@ df$Q4_cocktail = ifelse(grepl("Cocktail", df$Q4, ignore.case = T), 1, 0)
 df$Q4_wine = ifelse(grepl("Wine", df$Q4, ignore.case = T), 1, 0)
 
 # Meal Ordered
-df$m_order_duck = ifelse(df$meal_ordered == 2, 1, 0)
-df$m_order_fettuccine = ifelse(df$meal_ordered == 3, 1, 0)
-df$m_order_fish = ifelse(df$meal_ordered == 4, 1, 0)
-df$m_order_pizza = ifelse(df$meal_ordered == 5, 1, 0)
-df$m_order_pork = ifelse(df$meal_ordered == 6, 1, 0)
+df$meal_duck = ifelse(df$meal_ordered == 2, 1, 0)
+df$meal_fettuccine = ifelse(df$meal_ordered == 3, 1, 0)
+df$meal_fish = ifelse(df$meal_ordered == 4, 1, 0)
+df$meal_pizza = ifelse(df$meal_ordered == 5, 1, 0)
+df$meal_pork = ifelse(df$meal_ordered == 6, 1, 0)
 
 # Drink ordered
-df$d_order_water = ifelse(df$meal_ordered == 2, 1, 0)
-df$d_order_craftbeer = ifelse(df$meal_ordered == 3, 1, 0)
-df$d_order_macrobeer = ifelse(df$meal_ordered == 4, 1, 0)
-df$d_order_wine = ifelse(df$meal_ordered == 5, 1, 0)
-df$d_order_cocktail = ifelse(df$meal_ordered == 6, 1, 0)
-
+df$drink_water = ifelse(df$meal_ordered == 2, 1, 0)
+df$drink_craftbeer = ifelse(df$meal_ordered == 3, 1, 0)
+df$drink_macrobeer = ifelse(df$meal_ordered == 4, 1, 0)
+df$drink_wine = ifelse(df$meal_ordered == 5, 1, 0)
+df$drink_cocktail = ifelse(df$meal_ordered == 6, 1, 0)
 ```
 
 
+# EDA
+```{r}
+# Hisograms of Reasonable Score
+histogram(~ reasonable | levels(treat), data = df, 
+          xlab = "Rating (1=Very Unreasonable to 5=Very Reasonable)",
+          main = "Feelings About Meal Cost" )
+```
 
 
