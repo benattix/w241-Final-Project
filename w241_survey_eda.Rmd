@@ -1,6 +1,6 @@
 ---
-title: "Final"
-author: "Ben Attix"
+title: "W241 Final - Tipping Project"
+author: "Ben Attix, Chris Beecroft, Matt Burke, Brock Kowalchuk"
 date: "4/23/2017"
 output: pdf_document
 ---
@@ -15,6 +15,7 @@ library(DataCombine)
 library(lmtest)
 library(sandwich)
 library(lattice)
+library(psych)
 ```
 
 ```{r}
@@ -60,10 +61,13 @@ levels(df$reasonable) = c("Extremely unreasonable",
 ```{r}
 # Treatment flag
 df$treat = ifelse(df$total_no_tip > 0, 1, 0)
-levels(df$treat) = c("Control", "Treatment")
+levels(df$treat) = c("Tipping", "Fixed-Pricing")
 
 # Rename tip variable
 names(df)[names(df) == "Q23"] = "tip" 
+
+# Caculate pre-tip total price for the tipping group
+df$total_pre_tip = df$total_tip - df$tip  
   
 # Q2
 df$Q2_family = ifelse(grepl("Family", df$Q2, ignore.case = T), 1, 0)
@@ -108,4 +112,22 @@ histogram(~ reasonable | levels(treat), data = df,
           main = "Feelings About Meal Cost" )
 ```
 
+```{r}
+hist(df$tip, main = "Tip Amount", xlab = "Dollars", breaks=10)
+```
+
+```{r}
+tipTotal = lm(tip ~ total_pre_tip, data = df)
+plot(df$tip, df$total_pre_tip)
+abline(tipTotal)
+```
+
+```{r}
+scatter.hist(df$tip, df$total_pre_tip, title = "Tip Amount vs Pre-Tip Meal Cost", xlab = "Tip (in $)", ylab = "Pre-Tip Meal Cost (in $)")
+```
+```{r}
+# Naive model
+model_naive = lm(reasonable ~ treat, data = df)
+summary(model_naive)
+```
 
