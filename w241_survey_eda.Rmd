@@ -1,6 +1,6 @@
 ---
-title: "Final"
-author: "Ben Attix"
+title: "W241 Final - Tipping Project"
+author: "Ben Attix, Chris Beecroft, Matt Burke, Brock Kowalchuk"
 date: "4/23/2017"
 output: pdf_document
 ---
@@ -15,6 +15,7 @@ library(DataCombine)
 library(lmtest)
 library(sandwich)
 library(lattice)
+library(psych)
 ```
 
 ```{r}
@@ -32,6 +33,18 @@ n.control = length(df$total_tip[df$total_tip > 0])
 n.treatment = length(df$total_no_tip[df$total_no_tip > 0])
 ```
 # Transformations
+
+### Price
+```{r}
+# Total price
+df$total_all = ifelse(df$total_no_tip == 0, df$total_tip, df$total_no_tip)
+
+names(df)[names(df) == "Q23"] = "tip" 
+
+# Caculate pre-tip total price for the tipping group
+df$total_pre_tip = df$total_tip - df$tip  
+df$tip_pct = (df$tip / df$total_pre_tip) * 100
+```
 
 ### Create new variables which contains values for both treatment and control
 ```{r}
@@ -56,15 +69,22 @@ levels(df$reasonable) = c("Extremely unreasonable",
                           "Extremely reasonable")
 ```
 
-### Add dummy variables
+### Treatment Flag Plus Renaming
 ```{r}
 # Treatment flag
 df$treat = ifelse(df$total_no_tip > 0, 1, 0)
-levels(df$treat) = c("Control", "Treatment")
+levels(df$treat) = c("Tipping", "Fixed-Pricing")
 
-# Rename tip variable
-names(df)[names(df) == "Q23"] = "tip" 
-  
+# Rename some variables
+names(df)[names(df) == "Q23.1"] = "gender" 
+names(df)[names(df) == "Q24"] = "age" 
+names(df)[names(df) == "Q5"] = "baseline_spend" 
+names(df)[names(df) == "Q26"] = "baseline_tip_pct"
+names(df)[names(df) == "Q1_1"] = "baseline_eat_out" 
+```
+
+### Dummy Variables
+```{r}
 # Q2
 df$Q2_family = ifelse(grepl("Family", df$Q2, ignore.case = T), 1, 0)
 df$Q2_friends = ifelse(grepl("Friends", df$Q2, ignore.case = T), 1, 0)
@@ -108,4 +128,52 @@ histogram(~ reasonable | levels(treat), data = df,
           main = "Feelings About Meal Cost" )
 ```
 
+```{r}
 
+```
+
+```{r}
+hist(df$tip, main = "Tip Amount", xlab = "Dollars", breaks=10)
+```
+
+```{r}
+plot(df$tip, df$total_pre_tip)
+```
+
+```{r}
+scatter.hist(df$tip, df$total_pre_tip, title = "Tip Amount vs Pre-Tip Meal Cost", xlab = "Tip (in $)", ylab = "Pre-Tip Meal Cost (in $)")
+```
+
+
+```{r}
+# Naive model
+model_naive = lm(reasonable ~ treat, data = df)
+summary(model_naive)
+```
+
+
+```{r}
+# Control for demographics
+model2 = lm(reasonable ~ treat + factor(gender) + factor(age), data = df)
+summary(model2)
+```
+
+
+```{r}
+# Control for eating baseline dining habits
+model3 = lm(reasonable ~ treat + Q2_colleague + Q2_spouse + Q2_alone + Q2_friends + Q2_family + Q3_dessert + Q3_appetizer + Q3_mainCourse + Q4_wine + Q4_cocktail + Q4_beer + Q4_non_alc + Q4_water,data = df)
+summary(model3)
+```
+
+
+```{r}
+# Control for price
+model4 = lm(reasonable ~ treat + total_all, data = df)
+summary(model4)
+```
+
+```{r}
+# Control for price and order
+model5 = lm(reasonable ~ treat + total_all + factor(meal_ordered) + factor(drink_ordered), data = df)
+summary(model5)
+```
