@@ -1,3 +1,5 @@
+
+
 ---
 title: "W241 Final - Tipping Project"
 author: "Ben Attix, Chris Beecroft, Matt Burke, Brock Kowalchuk"
@@ -125,27 +127,63 @@ df$drink_cocktail = ifelse(df$meal_ordered == 6, 1, 0)
 # Average price per treatment group
 mean(df$total_all[df$treat==1])
 mean(df$total_all[df$treat==0])
+
+# Average reasonable score
+mean(df$reasonable[df$treat==1])
+mean(df$reasonable[df$treat==0])
 ```
 
+
+```{r, fig.height=10}
+bar_color <- c("cornflowerblue")
+
+# Hisograms of Reasonable Score
+histogram(~ reasonable | levels(treat), data = df,
+          main = "Feelings About Meal Cost",
+          xlab = "Rating \n (1=Very Unreasonable to 5=Very Reasonable)",
+          col = bar_color, alternating = FALSE)
+
+
+# Hisograms of Reasonable Score
+histogram(~ reasonable | levels(treat), data = df, 
+          xlab = "Rating",
+          scales = list(x=list(labels=c("", "Very\nUnreasonable","Somewhat\nUnreasonable", "Neither Reasonable\nnor Unreasonable", "Somewhat\nReasonable", "Very\nReasonable")), rot=35),
+          col = bar_color,
+          alternating = FALSE)
+
+# Hisograms of Reasonable Score
+histogram(~ reasonable | levels(treat), data = df, 
+          xlab = "Rating",
+          scales = list(x=list(labels=c("", "Very\nUnreasonable","Somewhat\nUnreasonable", "Neither Reasonable\nnor Unreasonable", "Somewhat\nReasonable", "Very\nReasonable"))),
+          col = bar_color,
+          alternating = FALSE)
+
+
+histogram(~ reasonable | levels(treat), data = df, 
+          scales = list(x=list(labels=c("", "Very\nUnreasonable","Somewhat\nUnreasonable", "Neither Reasonable\nnor Unreasonable", "Somewhat\nReasonable", "Very\nReasonable")), 
+                        rot=35, cex=1.2),
+          col = bar_color,
+          alternating = FALSE)
+```
 
 ```{r}
 # Hisograms of Reasonable Score
-histogram(~ reasonable | levels(treat), data = df, 
-          xlab = "Rating (1=Very Unreasonable to 5=Very Reasonable)",
-          main = "Feelings About Meal Cost" )
+histogram(~ total_all | levels(treat), data = df, 
+          xlab = "Final Bill Price ($)",
+          col = bar_color,
+          alternating = FALSE)
 ```
-
 
 ```{r}
 hist(df$tip, main = "Tip Amount", xlab = "Dollars", breaks=10)
 ```
 
 ```{r}
-plot(df$tip, df$total_pre_tip)
+plot(df$total_pre_tip, df$tip, xlab = "Price Before Tip ($)", ylab = "Tip ($)")
 ```
 
 ```{r}
-scatter.hist(df$tip, df$total_pre_tip, title = "Tip Amount vs Pre-Tip Meal Cost", xlab = "Tip (in $)", ylab = "Pre-Tip Meal Cost (in $)")
+scatter.hist(y = df$tip, x = df$total_pre_tip, title = "Tip Amount vs Pre-Tip Meal Cost", ylab = "Tip (in $)", xlab = "Pre-Tip Meal Cost (in $)")
 ```
 
 
@@ -183,7 +221,48 @@ summary(model5)
 ```
 
 ```{r}
-model6 = lm(reasonable ~ treat + baseline_tip_pct, data = df)
+model6 = lm(reasonable ~ treat + total_all + baseline_spend + factor(meal_ordered), data = df)
 summary(model6)
+
+model6b = lm(reasonable ~ treat + total_all + baseline_spend + meal_duck + meal_fettuccine + meal_fish + meal_pizza + meal_pork, data = df)
+summary(model6b)
+
+
+```
+
+```{r}
+# BEST MODEL - lowest SE
+model7 = lm(reasonable ~ treat + baseline_spend, data = df)
+summary(model7)
+```
+
+```{r}
+model8 = lm(reasonable ~ treat + baseline_spend + total_all, data = df)
+summary(model8)
+```
+
+
+```{r}
+# EVERYTHING
+model9 = lm(reasonable ~ treat + factor(age) + factor(gender) + baseline_tip_pct + baseline_eat_out + baseline_spend + total_all + factor(meal_ordered) + factor(drink_ordered) + Q2_colleague + Q2_spouse + Q2_alone + Q2_friends + Q2_family + Q3_dessert + Q3_appetizer + Q3_mainCourse + Q4_wine + Q4_cocktail + Q4_beer + Q4_non_alc + Q4_water, data = df)
+summary(model9)
+```
+
+```{r}
+model10 = lm(reasonable ~ treat + baseline_spend + factor(meal_ordered), data = df)
+summary(model10)
+```
+
+\pagebreak
+```{r}
+stargazer(model7, model10, model6,
+          type = "text", report = "vcs*", dep.var.labels=c("Reasonableness Rating"),
+          covariate.labels=c("Treatment", "Total Bill Price", "Baseline Spending", "Meal: Fettuccine", "Meal: Fish","Meal: Pizza","Meal: Pork"), align=TRUE)
+```
+\pagebreak
+```{r}
+# stargazer(model7, model8, model6b, model10,
+#           type = "text", report = "vcsp*", dep.var.labels=c("Reasonableness Rating"),
+#           covariate.labels=c("Treatment","Baseline Spending","Meal: Duck", "Meal: Fettuccine", "Meal: Fish","Meal: Pizza","Meal: Pork", "Total Bill Price"),align=TRUE)
 ```
 
