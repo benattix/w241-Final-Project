@@ -124,15 +124,19 @@ df$drink_cocktail = ifelse(df$meal_ordered == 6, 1, 0)
 
 # EDA
 ```{r}
+# Average price per treatment group
+mean(df$total_all[df$treat==1])
+mean(df$total_all[df$treat==0])
+```
+
+
+```{r}
 # Hisograms of Reasonable Score
 histogram(~ reasonable | levels(treat), data = df, 
           xlab = "Rating (1=Very Unreasonable to 5=Very Reasonable)",
           main = "Feelings About Meal Cost" )
 ```
 
-```{r}
-
-```
 
 ```{r}
 hist(df$tip, main = "Tip Amount", xlab = "Dollars", breaks=10)
@@ -163,7 +167,7 @@ summary(model2)
 
 ```{r}
 # Control for eating baseline dining habits
-model3 = lm(reasonable ~ treat + Q2_colleague + Q2_spouse + Q2_alone + Q2_friends + Q2_family + Q3_dessert + Q3_appetizer + Q3_mainCourse + Q4_wine + Q4_cocktail + Q4_beer + Q4_non_alc + Q4_water,data = df)
+model3 = lm(reasonable ~ treat + Q2_colleague + Q2_spouse + Q2_alone + Q2_friends + Q2_family + Q3_dessert + Q3_appetizer + Q3_mainCourse + Q4_wine + Q4_cocktail + Q4_beer + Q4_non_alc + Q4_water + baseline_tip_pct + baseline_spend + baseline_eat_out, data = df)
 summary(model3)
 ```
 
@@ -179,3 +183,9 @@ summary(model4)
 model5 = lm(reasonable ~ treat + total_all + factor(meal_ordered) + factor(drink_ordered), data = df)
 summary(model5)
 ```
+
+```{r}
+model6 = lm(reasonable ~ treat + baseline_tip_pct, data = df)
+summary(model6)
+```
+
