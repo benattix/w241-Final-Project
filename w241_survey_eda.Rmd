@@ -6,7 +6,8 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
-setwd("~/Desktop/w241-Final-Project/")
+#setwd("~/Desktop/w241-Final-Project/")
+
 library(foreign)
 library(data.table)
 library(AER)
@@ -118,6 +119,7 @@ df$drink_macrobeer = ifelse(df$meal_ordered == 4, 1, 0)
 df$drink_wine = ifelse(df$meal_ordered == 5, 1, 0)
 df$drink_cocktail = ifelse(df$meal_ordered == 6, 1, 0)
 ```
+
 
 
 # EDA
