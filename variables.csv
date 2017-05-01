@@ -1,0 +1,10 @@
+Variable,Type,Set
+# Times Eat Out Per Month,Numeric,0-30
+Who Do You Normally Eat With,Categorical,"Friends, Spouse, Significant Other, Family, Alone"
+Courses Ordered,Categorical,"Appetizer, Main Course, Dessert"
+Drinks Ordered,Categorical,"Water, Non-Alcoholic, Wine, Beer or Cider, Mixed Drinks"
+Average Meal Spend Per Person,Numeric,>0
+Gender,Categorical,"Male, Female, Prefer Not To Answer"
+Age,Categorical,"Under 18, 18-34, 35-49, 50-64, 65+"
+Baseline Tip Percentage,Numeric,0-100
+Was Meal Cost Is Reasonable,Categorical,Extremely Unreasonable to Extremely Reasonable (1-5)
