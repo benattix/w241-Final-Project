@@ -1,0 +1,41 @@
+---
+title: "Matthew Contribution To Report"
+output: pdf_document
+---
+
+*Notes: Assuming that the survey construction/setup goes over generally what's in the survey so going over the thought process rather than details*
+
+## Research Design (RXO Grammar)
+
+Once we had established that we wanted to do a simple survey, our options for research design were limited, and we settled on a standard "RXO" model to satisfy our data needs. RXO stands for research, treatment, outcome which directly follows the one-time data collection we had our subjects step through in the survey.  First, we collected some covariate information, randomized them into treatment or control, applied the treatment or control menu and measured the outcome variable response in the final stage. While this isn't a particulalry sophisticated or unique model, it satisfies the purpose of running a between-subjects design on an outcome variable that could be affected by viewing it more than once. 
+
+```{r, echo=FALSE}
+Group = c("Treatment", "Control")
+Randomization = c("R", "R")
+Treatment = c("X", "--")
+Outcome = c("O", "O")
+knitr::kable(data.frame(Group, Randomization, Treatment, Outcome))
+```
+
+Our main concern with the treatment step of providing the subject with a bill with standard or all-inclusive pricing was the selection of the meal options. If we limited the menu to a single item, then taste or cost trends in a particular region may bias the results regardless of what the subject thinks about tipping, as well as not accurately simulating a real restaurant environment with a variety of options. Thus we made the choice to simulate a real menu as closely as possible with items across a range of pricing and ingredient options with the hope that at least one or two meals would appeal to the subjects' preferences and budget. One assumption this decision necessitated was that the subjects choose menu items using the same thought process as they would in store, considering cost as a factor. If we don't have this assumption, this study is relatively nonsensical as subjects may choose a meal outside of their price range and complain at its unreasonableness. We would not expect this type of behavior from an in-person interaction, and so for this experiment, we also expect the subjects to behave as they normally would.
+
+## Measurement of Variables
+
+We gathered a selection of covariate information from our subjects including general demographic data as well as specific questions related to their restaurant-related habits. Below is a table of the different variables we collected along with their types and options.
+
+```{r, echo=FALSE, message=FALSE}
+#library(pander)
+variables = read.csv("variables.csv")
+knitr::kable(variables)
+#pander(variables)
+```
+
+Please note that our outcome variable of the subject's impression of meal price reasonableness was measured using a Likert scale. This is standard practice for questionnaire data collection, and we think it accurately allows us to model their satisfaction with pricing. 
+
+## Conclusion
+
+Our initial hypothesis was that subjects would be less satisfied with all-inclusive pricing than standard tipping pricing, and we believe the data support that position. The regression model including all major covariates showed only two fields to be significant in predicting the subjects' views on meal price reasonableness: baseline meal spending and the treatment of all-inclusive pricing. The former seems consistent in that those higher spending may have had budgets beyond our meal pricing, and the latter supports our theory with the greatest coefficient in the model. We received further confirmation in the lack of significant difference in average meal price between treatment and contro, indicating that while the groups had similar spending habits, their customer satisfaction levels with pricing were indeed different. 
+
+
+
+
