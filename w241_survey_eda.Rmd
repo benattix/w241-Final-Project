@@ -1,15 +1,12 @@
-
-
 ---
 title: "W241 Final - Tipping Project"
-author: "Ben Attix, Chris Beecroft, Matt Burke, Brock Kowalchuk"
+author: "Ben Attix"
 date: "4/23/2017"
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 #setwd("~/Desktop/w241-Final-Project/")
-
 library(foreign)
 library(data.table)
 library(AER)
@@ -40,7 +37,7 @@ n.treatment = length(df$total_no_tip[df$total_no_tip > 0])
 ### Price
 ```{r}
 # Total price
-df$total_all = ifelse(df$total_no_tip == 0, df$total_tip, df$total_no_tip)
+df$final_price = ifelse(df$total_no_tip == 0, df$total_tip, df$total_no_tip)
 
 names(df)[names(df) == "Q23"] = "tip" 
 
@@ -127,17 +124,19 @@ df$drink_cocktail = ifelse(df$meal_ordered == 6, 1, 0)
 # EDA
 ```{r}
 # Average price per treatment group
-mean(df$total_all[df$treat==1])
-mean(df$total_all[df$treat==0])
+mean(df$final_price[df$treat==1])
+mean(df$final_price[df$treat==0])
 
 # Average reasonable score
 mean(df$reasonable[df$treat==1])
 mean(df$reasonable[df$treat==0])
+
+t.test(df$final_price[df$treat==1], df$final_price[df$treat==0])
 ```
 
 
 ```{r, fig.height=10}
-bar_color <- c("cornflowerblue")
+bar_color <- c("steelblue")
 
 # Hisograms of Reasonable Score
 histogram(~ reasonable | levels(treat), data = df,
@@ -169,8 +168,8 @@ histogram(~ reasonable | levels(treat), data = df,
 ```
 
 ```{r}
-# Hisograms of Reasonable Score
-histogram(~ total_all | levels(treat), data = df, 
+# Hisograms of final price
+histogram(~ final_price | levels(treat), data = df, 
           xlab = "Final Bill Price ($)",
           col = bar_color,
           alternating = FALSE)
@@ -212,21 +211,21 @@ summary(model3)
 
 ```{r}
 # Control for price
-model4 = lm(reasonable ~ treat + total_all, data = df)
+model4 = lm(reasonable ~ treat + final_price, data = df)
 summary(model4)
 ```
 
 ```{r}
 # Control for price and order
-model5 = lm(reasonable ~ treat + total_all + factor(meal_ordered) + factor(drink_ordered), data = df)
+model5 = lm(reasonable ~ treat + final_price + factor(meal_ordered) + factor(drink_ordered), data = df)
 summary(model5)
 ```
 
 ```{r}
-model6 = lm(reasonable ~ treat + total_all + baseline_spend + factor(meal_ordered), data = df)
+model6 = lm(reasonable ~ treat + final_price + baseline_spend + factor(meal_ordered), data = df)
 summary(model6)
 
-model6b = lm(reasonable ~ treat + total_all + baseline_spend + meal_duck + meal_fettuccine + meal_fish + meal_pizza + meal_pork, data = df)
+model6b = lm(reasonable ~ treat + final_price + baseline_spend + meal_duck + meal_fettuccine + meal_fish + meal_pizza + meal_pork, data = df)
 summary(model6b)
 
 
@@ -239,14 +238,14 @@ summary(model7)
 ```
 
 ```{r}
-model8 = lm(reasonable ~ treat + baseline_spend + total_all, data = df)
+model8 = lm(reasonable ~ treat + baseline_spend + final_price, data = df)
 summary(model8)
 ```
 
 
 ```{r}
 # EVERYTHING
-model9 = lm(reasonable ~ treat + factor(age) + factor(gender) + baseline_tip_pct + baseline_eat_out + baseline_spend + total_all + factor(meal_ordered) + factor(drink_ordered) + Q2_colleague + Q2_spouse + Q2_alone + Q2_friends + Q2_family + Q3_dessert + Q3_appetizer + Q3_mainCourse + Q4_wine + Q4_cocktail + Q4_beer + Q4_non_alc + Q4_water, data = df)
+model9 = lm(reasonable ~ treat + factor(age) + factor(gender) + baseline_tip_pct + baseline_eat_out + baseline_spend + final_price + factor(meal_ordered) + factor(drink_ordered) + Q2_colleague + Q2_spouse + Q2_alone + Q2_friends + Q2_family + Q3_dessert + Q3_appetizer + Q3_mainCourse + Q4_wine + Q4_cocktail + Q4_beer + Q4_non_alc + Q4_water, data = df)
 summary(model9)
 ```
 
@@ -266,5 +265,36 @@ stargazer(model7, model10, model6,
 # stargazer(model7, model8, model6b, model10,
 #           type = "text", report = "vcsp*", dep.var.labels=c("Reasonableness Rating"),
 #           covariate.labels=c("Treatment","Baseline Spending","Meal: Duck", "Meal: Fettuccine", "Meal: Fish","Meal: Pizza","Meal: Pork", "Total Bill Price"),align=TRUE)
+```
+
+```{r}
+# Randomization Inference
+set.seed(241)
+
+# Empty vector to store ATE for each simulation
+ate.outcomes = c()
+
+# simulate 10,000 different assignments
+for (i in 1:10000){
+  treatment = sample( c(rep(0,n.control), rep(1,n.treatment)) ) #randomly assign treatments
+  reasonable.trt = mean(df$reasonable[treatment==1])  #mean response - treatment group
+  reasonable.ctl = mean(df$reasonable[treatment==0])  #mean response - control group
+  est.ate = reasonable.trt - reasonable.ctl         #calculate ATE 
+  ate.outcomes = c(ate.outcomes, est.ate)           #capture ATE for each simulation
+}
+
+# calculate the observed ATE
+observed_ate = mean(df$reasonable[df$treat==1]) - mean(df$reasonable[df$treat==0])
+
+# randomizations with a graeter ATE than our observed ATE
+larger_ates_count = length(ate.outcomes[abs(ate.outcomes) >= abs(observed_ate)])
+
+p_value = larger_ates_count / 10000
+```
+
+
+```{r}
+# Chi-sq
+chisq.test(table(df$treat, df$reasonable))
 ```
 

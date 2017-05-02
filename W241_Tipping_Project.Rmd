@@ -1,0 +1,229 @@
+---
+title: "W241 Tipping Project"
+author: "Ben Attix, Chris Beecroft, Brock Kowalchuk, Matthew Burke"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+setwd("~/Desktop/w241-Final-Project/")
+library(stargazer)
+library(lattice)
+library(car)
+library(knitr)
+#library(foreign)
+#library(data.table)
+#library(AER)
+#library(DataCombine)
+#library(lmtest)
+#library(sandwich)
+#library(psych)
+
+df = read.csv("DataforAnalysis2.csv")
+
+# counts for control and treatment groups
+n.control = length(df$total_tip[df$total_tip > 0])
+n.treatment = length(df$total_no_tip[df$total_no_tip > 0])
+
+###########################
+##### Transformations #####
+###########################
+
+# Total price
+df$total_ = ifelse(df$total_no_tip == 0, df$total_tip, df$total_no_tip)
+
+names(df)[names(df) == "Q23"] = "tip" 
+
+# Caculate pre-tip total price for the tipping group
+df$total_pre_tip = df$total_tip - df$tip  
+df$tip_pct = (df$tip / df$total_pre_tip) * 100
+
+# Final Bill Price
+df$final_price = ifelse(df$total_no_tip == 0, df$total_tip, df$total_no_tip)
+
+names(df)[names(df) == "Q23"] = "tip" 
+
+# Caculate pre-tip total price for the tipping group
+df$total_pre_tip = df$total_tip - df$tip  
+df$tip_pct = (df$tip / df$total_pre_tip) * 100
+
+# Treatment flag
+df$treat = ifelse(df$total_no_tip > 0, 1, 0)
+levels(df$treat) = c("Tipping", "Fixed-Pricing")
+
+# Rename some variables
+names(df)[names(df) == "Q23.1"] = "gender" 
+names(df)[names(df) == "Q24"] = "age" 
+names(df)[names(df) == "Q5"] = "baseline_spend"
+names(df)[names(df) == "Q26"] = "baseline_tip_pct"
+names(df)[names(df) == "Q1_1"] = "baseline_eat_out" 
+
+########################################################################################
+####### Create new variables which contains values for both treatment and control ###### 
+#### Due to Qualtrics, the treatment and control answers start in different variables ##
+
+# Q7 and Q31 - Meals
+df$meal_ordered = ifelse(df$Q7 == "", df$Q31, df$Q7)
+levels(df$meal_ordered) = levels(df$Q7)
+
+# Q16 and Q30 - Beverages
+df$drink_ordered = ifelse(df$Q16 == "", df$Q30, df$Q16)
+levels(df$drink_ordered) = levels(df$Q16)
+
+# Q8 and Q35 - Reasonable Score
+df$reasonable = ifelse(df$Q8 == "", df$Q35, df$Q8)
+
+# Recode so that 1=Extremely unreasonable and 5=Extremely reasonable
+  # It is originally ordered alphabetically
+
+df$reasonable = recode(df$reasonable, "2=5; 3=1; 4=3; 5=4; 6=2")
+levels(df$reasonable) = c("Extremely unreasonable",
+                          "Somewhat unreasonable",
+                          "Neither reasonable nor unreasonable",
+                          "Somewhat reasonable",
+                          "Extremely reasonable")
+
+##########################################
+######### Create Dummy Variables ######### 
+##########################################
+
+# Q2 - When going out to eat, who do you normally eat with?
+df$Q2_family = ifelse(grepl("Family", df$Q2, ignore.case = T), 1, 0)
+df$Q2_friends = ifelse(grepl("Friends", df$Q2, ignore.case = T), 1, 0)
+df$Q2_alone = ifelse(grepl("alone", df$Q2, ignore.case = T), 1, 0)
+df$Q2_spouse = ifelse(grepl("Spouse", df$Q2, ignore.case = T), 1, 0)
+df$Q2_colleague = ifelse(grepl("Colleagues", df$Q2, ignore.case = T), 1, 0)
+
+# Q3 - Which courses do you usually order?
+df$Q3_mainCourse = ifelse(grepl("Main", df$Q3, ignore.case = T), 1, 0)
+df$Q3_appetizer = ifelse(grepl("Appetizer", df$Q3, ignore.case = T), 1, 0)
+df$Q3_dessert = ifelse(grepl("Dessert", df$Q3, ignore.case = T), 1, 0)
+
+# Q4 - Which of the following drinks do you normally order?
+df$Q4_water = ifelse(grepl("Water", df$Q4, ignore.case = T), 1, 0)
+df$Q4_non_alc = ifelse(grepl("beverages", df$Q4, ignore.case = T), 1, 0)
+df$Q4_beer = ifelse(grepl("beer", df$Q4, ignore.case = T), 1, 0)
+df$Q4_cocktail = ifelse(grepl("Cocktail", df$Q4, ignore.case = T), 1, 0)
+df$Q4_wine = ifelse(grepl("Wine", df$Q4, ignore.case = T), 1, 0)
+```
+
+## Research Design (RXO Grammar)
+
+Once we had established that we wanted to do a simple survey, our options for research design were limited, and we settled on a standard "RXO" model to satisfy our data needs. RXO stands for research, treatment, outcome which directly follows the one-time data collection we had our subjects step through in the survey.  First, we collected some covariate information, randomized them into treatment or control, applied the treatment or control menu and measured the outcome variable response in the final stage. While this isn't a particulalry sophisticated or unique model, it satisfies the purpose of running a between-subjects design on an outcome variable that could be affected by viewing it more than once. 
+
+```{r, echo=FALSE}
+Group = c("Treatment", "Control")
+Randomization = c("R", "R")
+Treatment = c("X", "--")
+Outcome = c("O", "O")
+knitr::kable(data.frame(Group, Randomization, Treatment, Outcome))
+```
+
+Our main concern with the treatment step of providing the subject with a bill with standard or all-inclusive pricing was the selection of the meal options. If we limited the menu to a single item, then taste or cost trends in a particular region may bias the results regardless of what the subject thinks about tipping, as well as not accurately simulating a real restaurant environment with a variety of options. Thus we made the choice to simulate a real menu as closely as possible with items across a range of pricing and ingredient options with the hope that at least one or two meals would appeal to the subjects' preferences and budget. One assumption this decision necessitated was that the subjects choose menu items using the same thought process as they would in store, considering cost as a factor. If we don't have this assumption, this study is relatively nonsensical as subjects may choose a meal outside of their price range and complain at its unreasonableness. We would not expect this type of behavior from an in-person interaction, and so for this experiment, we also expect the subjects to behave as they normally would.
+
+## Measurement of Variables
+
+We gathered a selection of covariate information from our subjects including general demographic data as well as specific questions related to their restaurant-related habits. Below is a table of the different variables we collected along with their types and options.
+
+```{r, echo=FALSE, message=FALSE}
+variables = read.csv("variables.csv")
+knitr::kable(variables)
+```
+
+Please note that our outcome variable of the subject's impression of meal price reasonableness was measured using a Likert scale. This is standard practice for questionnaire data collection, and we think it accurately allows us to model their satisfaction with pricing. 
+
+# Results
+
+Over the span of this course we have used two different methods, linear modeling and randomization inference, to test whether our treatment variable had an effect on our outcome variable. In this section we will present our results using both of these methods as well as a Chi-squared test. Even though we did not discuss Chi-squared tests in this course, we are including it because it is designed for analyzing categorical variables, which we have this experiment.
+
+## Linear Modeling
+
+
+
+\pagebreak
+```{r, echo=FALSE}
+# Naive model - treatment is the only predictor
+model_naive = lm(reasonable ~ treat, data = df)
+
+# Control for baseline_spending
+model1 = lm(reasonable ~ treat + baseline_spend, data = df)
+
+# Control for demographics
+model2 = lm(reasonable ~ treat + baseline_spend + factor(gender) + factor(age), data = df)
+
+# Control for eating baseline dining habits
+# model3 = lm(reasonable ~ treat + Q2_colleague + Q2_spouse + Q2_alone + Q2_friends + Q2_family + Q3_dessert + Q3_appetizer + Q3_mainCourse + Q4_wine + Q4_cocktail + Q4_beer + Q4_non_alc + Q4_water + baseline_tip_pct + baseline_spend + baseline_eat_out, data = df)
+
+
+stargazer(model_naive, model1, model2,
+          type = "text", report = "vcsp*", dep.var.labels=c("Reasonableness Rating"),
+          covariate.labels=c("Treatment", "Baseline Spending", "Gender: Male", "Gender: Prefer not to Answer","Age: 35-49","Age: 50-64", "Age: 65 and Above", "Age: Prefer not to Asnwer"),
+          align=TRUE)
+```
+
+
+## Randomization Inference
+
+The sharp null hypothesis states that the treatment effect is zero for every person, not just zero overall. In other words for each person, their potential outcomes to treatment and potential outcomes to control are exactly the same. Randomization inference assumes the sharp null hypothesis and allows us approximate the distribution of treatment estimates we would reach if the treatment had no effect. 
+
+```{r, echo=FALSE}
+set.seed(241)
+
+# Empty vector to store ATE for each simulation
+ate.outcomes = c()
+
+# simulate 100,000 different assignments
+for (i in 1:100000){
+  treatment = sample( c(rep(0,n.control), rep(1,n.treatment)) ) #randomly assign treatments
+  reasonable.trt = mean(df$reasonable[treatment==1])  #mean response - treatment group
+  reasonable.ctl = mean(df$reasonable[treatment==0])  #mean response - control group
+  est.ate = reasonable.trt - reasonable.ctl         #calculate ATE 
+  ate.outcomes = c(ate.outcomes, est.ate)           #capture ATE for each simulation
+}
+
+# calculate the observed ATE
+observed_ate = mean(df$reasonable[df$treat==1]) - mean(df$reasonable[df$treat==0])
+
+# randomizations with a graeter ATE than our observed ATE
+larger_ates_count = length(ate.outcomes[abs(ate.outcomes) >= abs(observed_ate)])
+
+p_value = larger_ates_count / 100000
+```
+
+We used randomization inference to simulate 100,000 different treatment assignments, and therefore 100,000 different treatment estimates, from our data. This yielded us with a p-value of **0.00097** meaning we would have less than 0.1% chance of observing our treatment effect by random chance. 
+
+## Chi-Squared Test
+
+Chi-Square tests are used for categorical data to determine if there is a difference between various groups. Since our outcome measure is a Likert-scale rating, it is an ordered category and not a truly continuous variable. Therefore, the Chi-Square test is an appropriate test for our data.
+
+```{r}
+chisq.test(table(df$treat, df$reasonable) )
+# fisher.test(table(df$treat, df$reasonable) )
+```
+
+
+## Overall Bill Price
+
+One of our concerns was that there would be different bill prices between the treatment and control group. In other words, the average bill prices for the treatment and control groups would be different because one group thought the prices were more reasonable than the other. The direction of this effect could go either way. Maybe one group feels the prices are so reasonable that they order more food, or they feel the prices are so unreasonable that they opt for the cheapest dish in the hopes of making the bill as tolerable as possible. 
+
+```{r, echo=FALSE} 
+# Hisograms of Final Bill Price
+histogram(~ final_price | levels(treat), data = df, 
+          xlab = "Final Bill Price ($)",
+          col = "steelblue",
+          alternating = FALSE)
+
+# Average price per treatment group
+avg_bill_trt = mean(df$final_price[df$treat==1])
+avg_bill_ctl = mean(df$final_price[df$treat==0])
+
+pval_price_diff = t.test(df$final_price[df$treat==1], df$final_price[df$treat==0])[3]
+```
+
+The chart above shows the total bill prices including meal, 7% tax, and tip (if applicable). The average total bill prices were \$`r round(avg_bill_trt,2)` for the treatment group and \$`r round(avg_bill_ctl,2)` for the control group. This means that on average, the tipping group spent more money but was thought the cost was more reasonable. However, a t-test on the difference in bill prices between the two groups gives a p-value of `r pval_price_diff` meaning we cannot conclude that the bill prices were significantly different between the two groups.
+
+# Conclusion
+
+Our initial hypothesis was that subjects would be less satisfied with all-inclusive pricing than standard tipping pricing, and we believe the data support that position. The regression model including all major covariates showed only two fields to be significant in predicting the subjects' views on meal price reasonableness: baseline meal spending and the treatment of all-inclusive pricing. The former seems consistent in that those higher spending may have had budgets beyond our meal pricing, and the latter supports our theory with the greatest coefficient in the model. We received further confirmation in the lack of significant difference in average meal price between treatment and contro, indicating that while the groups had similar spending habits, their customer satisfaction levels with pricing were indeed different. 
+
+
+
+
