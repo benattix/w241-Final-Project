@@ -1,0 +1,71 @@
+---
+title: "W241 Tipping Project"
+author: "Beecroft, Chris"
+date: "5/1/2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Does all-inclusive (tax + tip) pricing at restaurants impact the customer perception of value?
+
+## Introduction
+
+Tipping varies around the world from countries such as Australia where tipping is not practiced, to countries such as Germany where rounding the bill up to the nearest Euro is the norm.  In the US, the expectation for tipping has slowly climbed from 10 to 15 to 18 to 20 percent over the past 100 years [^1].  Often a mandatory tip is added for large groups and some high-end restaurants automatically add an 18% experience or service charge.  While the idea of giving a small gratuity for services is old, the roots of modern US tipping practices go back to the post-Civil War era.  According to Saru Jayaraman of the Food Labor Research Center, UC Berkeley, tipping started as a way for train operators to avoid paying the newly-freed slaves and still have them earn an income [^2].  This practice continues today with the alternate minimum wage that restaurant owners are allowed to pay their staff on the premise that tips will make up the difference.
+
+[^1]: Tuttle, B. (2014-09-18). 15 Things You Didn’t Know About Tipping.  Time Magazine.   Retrieved from http://time.com/money/3394185/tipping-myths-realities-history/ on 2017-05-02.
+
+[^2]: Ferdman, R. A. (2016-02-18).  I dare you to read this and still feel good about tipping.  The Washington Post.  Retrieved from https://www.washingtonpost.com/news/wonk/wp/2016/02/18/i-dare-you-to-read-this-and-still-feel-ok-about-tipping-in-the-united-states/?utm_term=.a694c2615e80 on 2017-05-02.
+
+
+This two-tiered system "traps many low-wage tipped restaurant workers in conditions of economic and social vulnerability" [^3].  A continually rising 'accepted' tip rate is not sustainable and the movement to create all-inclusive pricing is an attempt at addressing rising expected tips and low wages in the food industry.  If Americans are willing to bear the burden of the true cost of restaurants, then perhaps we can achieve better pay equality.  It is this concern of fairness and social responsibility that drives our research question.
+
+[^3]: Food Labor Research Center  (2015-12).  Working Below The Line.  UC Berkeley. Retrieved from http://food.berkeley.edu/wp-content/uploads/2015/07/WorkingBelowTheLine_F2.pdf on 2017-05-02.
+
+A small number of restaurants in cities such as San Francisco, Berkeley, and New York are attempting to address this by creating an all-inclusive pricing model.  Danny Meyer, a respected New York restaurateur, made a splash a few years ago when he announced he would move all of his restaurants to this pricing structure [^4].   While he has since retreated from using this model at some of his restaurants, the attempt to change the system still exists.  The question we seek to answer is the following: if a patron knows an establishment is tip-less, will they accept the higher price and feel that the additional cost is reasonable.  Our hypothesis is that they would be less satisfied with meal prices with this model.
+
+[^4]: Sutton, R. (2015-10-14).  Danny Meyer is eliminating all tipping at his restaurants and significantly raising prices to make up the difference, a move that will raise wages, save the hospitality industry, and forever change how diners dine.    New York Eater.  Retrieved from https://ny.eater.com/2015/10/14/9517747/danny-meyer-no-tipping-restaurants on 2017-05-02.
+
+##Experiment
+
+At the start of our experimental design phase, we researched Bay Area restaurants that were offering all-inclusive pricing and reached out to a few restaurateurs we knew.  Asking a restaurant to randomly select patrons to give them separately priced menus or to switch up nights that they used one system or another seemed problematic.   We opted instead for a restaurant experience “thought experiment” design that would use a Qualtrics survey (see appendix) driven by subjects from Amazon Turk.
+
+###Qualtrics Survey
+
+In brief, the survey design was to ask a few questions about the subject’s dining habits (appendix, page 1), then randomly assign the subject to the control or treatment group, where they would be presented with a menu of drink and food options (page 2).  They would then be presented with a bill and asked for a tip if they were in the control group (page 3).  They were shown the total bill amount and were asked if they felt the cost was reasonable (page 4).  They were then shown a final set of questions (page 5), and then the completion page with their Amazon Turk code (page 6).
+
+<center>![flow](flow.png)</center>
+
+Page 1 contained the basic covariates we were interested in for evaluating the survey results: Number of times eating out, who they normally dined with (multi-choice), which courses they normally ordered (multi-choice), what drinks they normally ordered (multi-choice), and their average spend per person when dining with a significant other.   (As an aside, in the appendix, the bottom right footer says 1/2; page 2 was blank and has been omitted.)
+
+Page 2 Control, Page 2 Treatment:  We started with the text, "Welcome to our restaurant, please be seated.  Here is a menu, please look it over and select what you would like.  I will be back shortly."  For the food section of the menu we had several concerns.   One was that we did not want to provide a name for the restaurant as we felt this could influence the perception of pricing.  Certain words such as diner or café could be interpreted differently in different parts of the country, so we opted for no restaurant name.
+
+We opted for a world cuisine loosely based on California- and New York- based restaurants, as we felt that a regional cuisine such as French or Italian would put people into a particular mind-set.  We set up a mix of vegetarian and meat options and added a Middle Eastern dish that would be more familiar to North African/Mediterranean subjects.
+
+Pricing was another issue that we worked through.  Prices are widely varied in the US depending on whether you are in an urban area or a rural part of the country.  We decided that we would focus on the urban areas.  While the prices on the control menu are inexpensive compared to Bay Area or New York dining, they are not overly low.  For the treatment menu, we chose a price that was about 30% higher on average (between 27% and 32%).  This number was selected on the idea that this would incorporate a 7% tax and an 18% gratuity with an a few additional percentage points of surcharge.  Also of note is that the dinner items were randomly shuffled for each survey.
+
+We opted to add a beverage section, including a free water option, to give subjects the option to select a no-cost item, rather than requiring a beverage purchase.   For alcoholic beverages, prices in the treatment group were $1 higher than in the control group, with the exception of the cocktail, which was priced $2 higher, given that mixed drinks are more labor intensive.  These amounts were chosen to reflect typical tip amounts in urban areas.
+
+We ended the treatment page with the text “Hospitality and tax included.”  This was loosely based on text that Danny Meyer used in his New York Restaurants.
+
+Page 3 Control, Page 3 Treatment:  For page 3, the subjects were told that they had a wonderful time and service was prompt.  They were presented with an itemized bill.  The control group was then asked to provide a tip amount while the treatment group was again reminded that hospitality and tax were included.  (In the sample survey in the appendix, we show the same menu items for control and treatment, plus and a $7 tip on the control page.)
+
+Page 4 does not differ between Control and Treatment.  The two are broken out here to show the cost difference between the flows.
+
+Page 5:  After our initial pilot study, we found that some participants were clicking through the survey in 30 seconds or less.  At the recommendation of the Qualtrics user guide, we added the question, “If you live in the U.S. select strongly agree.”  We also added questions on gender, age, and average tip amount in the hope of making this question less obvious to subjects that clicked through the survey.
+
+Page 6 is the end of the survey.
+
+
+Since the cost of food and restaurants is quite varied across the United States, we also wanted to limit participation to only a few urban areas.
+
+###Amazon Turk
+
+With Amazon Turk, we set up a task with the description: “Let us know your experience and preference at restaurants (3-5 minute survey).”  While Qualtrics estimated the survey should take 6 minutes, the mean survey time was just over 2 minutes.   The task was offered at $ 0.30, which would place a 2-minute subject above the national minimum wage.
+
+For our pilot studies we were able to quickly get the requested number of subjects, but for the actual survey, the $ 0.30 was on the low side, and it took twenty days before we decided to end the survey.   We had planned to stop after 330 responses (300 responses and a 10% overage for the inevitable re-takers from the pilot surveys).  The survey started on April 5th and only garnered three responses after three days.  We realized that we had one of the restrictions backwards (limit to users who have 0 tasks completed, switched to users who have more than 0 tasks completed). We restarted the survey on the 8th before finally deciding on Thursday April 20th to end the survey on Sunday April 23rd.  We did contemplate raising the price but felt that this would affect the results of the survey.  From these two sets we received 263 responses.
+
+Finally we set up Amazon Turk to limit data to California, New York, Pennsylvania, and Washington D.C.  Unfortunately Amazon Turk does not provide a more fine-grained selection of areas, so we targeted high-population states as a proxy for urban areas.  The validation of the region selection data was done as one of our final pilots where we collected 30 subjects on April 3rd to validate that the region selections were working correctly.  During validation of the area restriction pilot, we examined the latitude and longitude in the data set to verify that subjects were in our target areas.  No other data was reviewed.  These were included to make up for the unreached number.
+
+
