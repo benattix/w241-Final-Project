@@ -105,7 +105,9 @@ df$Q4_cocktail = ifelse(grepl("Cocktail", df$Q4, ignore.case = T), 1, 0)
 df$Q4_wine = ifelse(grepl("Wine", df$Q4, ignore.case = T), 1, 0)
 ```
 
+\begin{center}
 Does all-inclusive (tax + tip) pricing at restaurants impact the customer perception of value?
+\end{center}
 
 # Introduction
 
@@ -130,9 +132,7 @@ At the start of our experimental design phase, we researched Bay Area restaurant
 
 ## Qualtrics Survey
 
-In brief, the survey design was to ask a few questions about the subject’s dining habits (appendix, page 1), then randomly assign the subject to the control or treatment group, where they would be presented with a menu of drink and food options (page 2).  They would then be presented with a bill and asked for a tip if they were in the control group (page 3).  They were shown the total bill amount and were asked if they felt the cost was reasonable (page 4).  They were then shown a final set of questions (page 5), and then the completion page with their Mechanical Turk code (page 6).  Below is the flow of the survey with control being on the left and treatment on the right.  The survey page numbers are called out on the left side for reference.
-
-<center>![flow](flow.png)</center>
+In brief, the survey design was to ask a few questions about the subject’s dining habits (appendix, page 1), then randomly assign the subject to the control or treatment group, where they would be presented with a menu of drink and food options (page 2).  They would then be presented with a bill and asked for a tip if they were in the control group (page 3).  They were shown the total bill amount and were asked if they felt the cost was reasonable (page 4).  They were then shown a final set of questions (page 5), and then the completion page with their Mechanical Turk code (page 6).  Below (Figure 1) is the flow of the survey with control being on the left and treatment on the right.  The survey page numbers are called out on the left side for reference.
 
 **Page 1** contained the basic covariates we were interested in for evaluating the survey results: Number of times eating out, who they normally dined with (multi-choice), which courses they normally ordered (multi-choice), what drinks they normally ordered (multi-choice), and their average spend per person when dining with a significant other.   (As an aside, in the appendix, the bottom right footer says 1/2; page 2 was blank and has been omitted.)
 
@@ -156,6 +156,8 @@ We ended the treatment page with the text “Hospitality and tax included.”  T
 
 Since the cost of food and restaurants is quite varied across the United States, we also wanted to limit participation to only a few urban areas.
 
+![Survey Flow](flow.png)
+
 ## Amazon Mechanical Turk
 
 With Amazon Mechanical Turk, we set up a task with the description: “Let us know your experience and preference at restaurants (3-5 minute survey).”  While Qualtrics estimated the survey should take 6 minutes, the mean survey time was just over 2 minutes.   The task was offered at $ 0.30, which would place a 2-minute subject above the national minimum wage.
@@ -164,9 +166,9 @@ For our pilot studies we were able to quickly get the requested number of subjec
 
 Finally we set up Mechanical Turk to limit data to California, New York, Pennsylvania, and Washington D.C.  Unfortunately Mechanical Turk does not provide a more fine-grained selection of areas, so we targeted high-population states as a proxy for urban areas.  The validation of the region selection data was done as one of our final pilots where we collected 30 subjects on April 3rd to validate that the region selections were working correctly.  During validation of the area restriction pilot, we examined the latitude and longitude in the data set to verify that subjects were in our target areas.  No other data was reviewed.  These were included to make up for the unreached number.
 
-## Research Design (RXO Grammar)
+# Research Design (RXO Grammar)
 
-Once we had established that we wanted to do a simple survey, our options for research design were limited, and we settled on a standard "RXO" model to satisfy our data needs. RXO stands for research, treatment, outcome which directly follows the one-time data collection we had our subjects step through in the survey.  First, we collected some covariate information, randomized them into treatment or control, applied the treatment or control menu and measured the outcome variable response in the final stage. While this isn't a particulalry sophisticated or unique model, it satisfies the purpose of running a between-subjects design on an outcome variable that could be affected by viewing it more than once. 
+We settled on a standard "RXO" model to satisfy our data collection needs. RXO stands for research, treatment, outcome which directly follows the one-time data collection we had our subjects step through in the survey.  First, we collected some covariate information, randomized them into treatment or control, applied the treatment or control menu and measured the outcome variable response in the final stage. While this isn't a particularly sophisticated or unique model, it satisfies the purpose of running a between-subjects design on an outcome variable that could be affected by viewing it more than once. 
 
 ```{r, echo=FALSE}
 Group = c("Treatment", "Control")
@@ -179,21 +181,21 @@ knitr::kable(data.frame(Group, Randomization, Treatment, Outcome))
 Our main concern with the treatment step of providing the subject with a bill with standard or all-inclusive pricing was the selection of the meal options. If we limited the menu to a single item, then taste or cost trends in a particular region may bias the results regardless of what the subject thinks about tipping, as well as not accurately simulating a real restaurant environment with a variety of options. Thus we made the choice to simulate a real menu as closely as possible with items across a range of pricing and ingredient options with the hope that at least one or two meals would appeal to the subjects' preferences and budget. One assumption this decision necessitated was that the subjects choose menu items using the same thought process as they would in store, considering cost as a factor. If we don't have this assumption, this study is relatively nonsensical as subjects may choose a meal outside of their price range and complain at its unreasonableness. We would not expect this type of behavior from an in-person interaction, and so for this experiment, we also expect the subjects to behave as they normally would.
 
 
-## Experimental Materials & Randomization Engineering
+# Experimental Materials & Randomization Engineering
 
 The ideal experiment to determine whether all-inclusive pricing impacted the satisfaction levels of restaurant diners would have included selecting a random sample of restaurants across an urban environment (i.e. New York or San Francisco) and within each restaurant, randomly selecting individuals to be treated to the all-inclusive rate or the standard rate. This would have allowed a live experiment where we may have been able to cut across multiple covariates to determine more granular reasoning for a potential outcome. However, given the lack of resources and restaurateur connections, the next best option was to somewhat replicate the experience of eating in a restaurant via online surveys. 
 
-Prior to the final experiment, the group conducted several preliminary surveys to learn the nuances around Amazon’s Mechanical Turk and Qualtrics. Through these early surveys the team was able to improve the survey flow and construction to provide a more robust outcome including: 
+Prior to the final experiment, the group conducted several preliminary surveys to learn the nuances around Amazon Mechanical Turk and Qualtrics. Through these early surveys the team was able to improve the survey flow and construction to provide a more robust outcome including: 
 
-Mitigating risk of repeat survey participants
-Restricting respondent’s locations to California, New York, Pennsylvania, and DC
-Implementing a Compliance Check near end of survey
-Randomizing so equal number of treatment and control respondents flow through survey
++ Mitigating risk of repeat survey participants
++ Restricting respondent’s locations to California, New York, Pennsylvania, and D.C.
++ Implementing a Compliance Check near end of survey
++ Randomizing so equal number of treatment and control respondents flow through survey
 
-While the group did not succeed in preventing repeat responders from initiating a second survey, the IP Address of each user was captured from Mechanical Turk and this was used to filter all results from duplicate individuals from the final analysis. Furthermore, the preliminary surveys yielded responses from individuals primarily from outside the United States. The team subsequently decided to isolate responses from four states and districts within the country that have large metropolitan areas. The plot below shows the high concentrated of respondents in the desired regions. The responses captured from outside these regions could be due to extraneous factors (e.g. Turks vacationing or moving locations but not having their profile updated).
+While the group did not succeed in preventing repeat responders from initiating a second survey, the IP Address of each user was captured from Mechanical Turk and this was used to filter all results from duplicate individuals from the final analysis. Furthermore, the preliminary surveys yielded responses from individuals primarily from outside the United States. The team subsequently decided to isolate responses from four states and districts within the country that have large metropolitan areas. The plot below shows the high concentrated of respondents in the desired regions. The responses captured from outside these regions could be due to extraneous factors (e.g. Turk workers vacationing or moving locations but not having their profile updated).
 
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, warning=FALSE, echo=FALSE, message=FALSE}
 filtered_data <- read.csv("DataforAnalysis2.csv", header = TRUE, sep = ",")
 #head(filtered_data)
 
@@ -204,15 +206,16 @@ p <- p + geom_point(data = filtered_data, aes(y = LocationLatitude, x = Location
 p
 ```
 
-A significant benefit online is the ease at which randomization can be executed, however, the difficulty is sometimes identifying which unobserved characteristics could potentially dilute the academic strength of any experimental results. This experiment had one point of randomization - where individuals in the treatment group received a ‘restaurant bill’ having the hospitality (tip) and tax included and another receiving a more traditional bill where tax was added after the meal and the individual could pencil in a tip. 
+A significant benefit to conducting this online is the ease at which randomization can be executed, however, the difficulty is sometimes identifying which unobserved characteristics could potentially dilute the academic strength of any experimental results. This experiment had one point of randomization - where individuals in the treatment group received a ‘restaurant bill’ having the hospitality (tip) and tax included and another receiving a more traditional bill where tax was added after the meal and the individual could pencil in a tip. 
 
 The key to making randomization a success was to ensure the survey had roughly the same number of people in the treatment group as in the control group. A randomization process was established within Qualtrics where two blocks of questions were created for the treatment and control group, respectively. The group used a ‘randomizer’ function to randomly present one of the two blocks evenly over the course of the experiment, resulting in the following outcome.
 
-!["High-Level Flow Diagram"](NDiagram.png)
+![High-Level Flow Diagram](NDiagram.png)
 
 One nuance of the experiment was the uneven number of individual that ultimately ended up in the treatment and control groups. This was the results of not filtering out duplicates and non-compliers until after the experiment was completed. An improved experiment may have an upfront check for duplicates and non-compliance, to mitigate the imbalance between treatment and control.
 
-## Measurement of Variables
+
+# Measurement of Variables
 
 We gathered a selection of covariate information from our subjects including general demographic data as well as specific questions related to their restaurant-related habits. Below is a table of the different variables we collected along with their types and options.
 
@@ -227,12 +230,12 @@ Please note that our outcome variable of the subject's impression of meal price 
 
 Over the span of this course we have used two different methods, linear modeling and randomization inference, to test whether our treatment variable had an effect on our outcome variable. In this section we will present our results using both of these methods as well as a Chi-squared test. Even though we did not discuss Chi-squared tests in this course, we are including it because it is designed for analyzing categorical variables, which we have this experiment.
 
-Figure 1 shows the distribution of responses by treatment group. The average ratings were 3.29 for the treatment group and 3.76 for the control group giving us an average treatment effect of -0.47 before controlling for any other factors.
+Figure 3 shows the distribution of responses by treatment group. The average ratings were 3.29 for the treatment group and 3.76 for the control group giving us an average treatment effect of -0.47 before controlling for any other factors.
 
 ```{r, echo=FALSE}
 # Hisograms of Reasonable Score
 histogram(~ reasonable | levels(treat), data = df,
-          main  = "Figure 1",
+          main  = "Figure 3",
           xlab = "Rating",
           scales = list(x=list(labels=c("", "Very Unreasonable",
                                         "Somewhat Unreasonable",
@@ -250,7 +253,7 @@ histogram(~ reasonable | levels(treat), data = df,
 
 Linear modeling allows us estimate the effect of our treatment variable while also controlling for covariates that may have played a role as well. \autoref{reasonableness_rating} shows three different models of our data. The first model is our "naive" model which uses treatment as the only predictor. The second model includes baseline spending, which is how much the respondent normally spends per person when going out to dinner. Finally, the third model adds in the number of times they normally eat out per month as well as fixed effects for age, gender, who they normally eat with, what courses they normally order, and what drinks they typically order. The third model includes all of the possible covariates that we could have included in our model in order to test whether anything would make a difference in the magnitude or standard error of our treatment estimate. These additional covariates did not do anything for the model and actually made the standard error larger.
 
-Our best model is the second one, because it has the lowest standard error for the treatment variable and it has the highest adjusted R^2^. This model shows us an average treatment effect of -0.383 (standard error of 0.129) and a p-value of 0.004. Baseline spending is a significant covariate, but the effect size is only 0.024 or roughly 6% of the size of our treatment effect. Another things to note is that each model shows a statistically significant treatment effect and an ATE between -0.38 and -0.47. Since each model gave such similar results for the ATE, this is a good sign that our treatment truly had an effect and what we're seeing is not due to a poor model.
+Our best model is the second one, because it has the lowest standard error for the treatment variable and it has the highest adjusted R^2^. This model shows us an average treatment effect of -0.383 (standard error of 0.129) and a p-value of 0.004. Baseline spending is a significant covariate, and has a positive effect size meaning the more they typically spend, the more reasonable they felt the price was. However, the effect size is only 0.024 or roughly 6% of the size of our treatment effect. Another things to note is that each model shows a statistically significant treatment effect and an ATE between -0.38 and -0.47. Since each model gave such similar results for the ATE, this is a good sign that our treatment truly had an effect and what we're seeing is not due to a poor model.
 
 \pagebreak
 ```{r, echo=FALSE, results="asis", warning=FALSE}
@@ -272,7 +275,7 @@ stargazer(model_naive, model1, model2,
           add.lines = list(c("Fixed Effects", "No", "No", "Yes")),
           covariate.labels=c("Treatment", 
                              "Baseline Spending", 
-                             "Num Times Eat Out Per Month"),
+                             "Freq Eat Out / Month"),
           label = "reasonableness_rating"
           )
 ```
@@ -282,7 +285,7 @@ stargazer(model_naive, model1, model2,
 
 The sharp null hypothesis states that the treatment effect is zero for every person, not just zero overall. In other words for each person, their potential outcomes to treatment and potential outcomes to control are exactly the same. Randomization inference assumes the sharp null hypothesis and allows us approximate the distribution of treatment estimates we would reach if the treatment had no effect. 
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=FALSE}
 set.seed(241)
 
 # Empty vector to store ATE for each simulation
@@ -313,7 +316,6 @@ We used randomization inference to simulate 100,000 different treatment assignme
 Chi-Square tests are used for categorical data to determine if there is a difference between various groups. Since our outcome measure is a Likert-scale rating, it is an ordered category and not a truly continuous variable. Therefore, the Chi-Square test is an appropriate test for our data.
 
 ```{r, echo=FALSE, warning=FALSE}
-# Pander
 ReasonablenessRating = df$reasonable
 Treatment = df$treat
 chisq.test(table(ReasonablenessRating, Treatment) )
@@ -323,14 +325,14 @@ The results of our Chi-squared test further confirm what we saw in the linear mo
 
 ## Overall Bill Price
 
-One concern we had was that maybe people in the tipping group would decide to leave very small tips. With no ramifications for leaving a bad tip, they could decide to go that route and it would potentially influence our results. In Figure 2, we show the distribution of tip percentages left by respondents. There are a couple questionable values but overall the distribution of tip percentages looks good. The mean tip percentage is 18.7% (95% confidence interal of 17.7% - 19.8%) which is fairly normal therefore we feel that respondents treated the tips like they would in a normal restaurant setting. 
+One concern we had was that maybe people in the tipping group would decide to leave very small tips. With no ramifications for leaving a bad tip, they could decide to go that route and it would potentially influence our results. In Figure 4, we show the distribution of tip percentages left by respondents. There are a couple questionable values but overall the distribution of tip percentages looks good. The mean tip percentage is 18.7% (95% confidence interval of 17.7% - 19.8%) which is fairly normal therefore we feel that respondents treated the tips like they would in a normal restaurant setting. 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.height=4}
 # Hisograms of Tipping Percentage
 histogram(df$tip_pct,
           xlab = "Tip Percentage",
           col = "steelblue",
-          main = "Figure 2",
+          main = "Figure 4",
           breaks = 15)
 
 avg_tip = mean(df$tip_pct, na.rm = TRUE)
@@ -342,13 +344,13 @@ avg_tip = mean(df$tip_pct, na.rm = TRUE)
 
 Another concern of ours was that there would be different bill prices between the treatment and control group. In other words, the average bill prices for the treatment and control groups would be different because one group thought the prices were more reasonable than the other. The direction of this effect could go either way. Maybe one group feels the prices are so reasonable that they order more food, or they feel the prices are so unreasonable that they opt for the cheapest dish in the hopes of making the bill as tolerable as possible. 
 
-```{r, echo=FALSE} 
+```{r, echo=FALSE, fig.height=4} 
 # Hisograms of Final Bill Price
 histogram(~ final_price | levels(treat), data = df, 
           xlab = "Final Bill Price ($)",
           col = "steelblue",
           alternating = FALSE,
-          main = "Figure 3")
+          main = "Figure 5")
 
 # Average price per treatment group
 avg_bill_trt = mean(df$final_price[df$treat==1])
@@ -357,9 +359,9 @@ avg_bill_ctl = mean(df$final_price[df$treat==0])
 pval_price_diff = t.test(df$final_price[df$treat==1], df$final_price[df$treat==0])[3]
 ```
 
-Figure 3 shows the total bill prices including meal, 7% tax, and tip (if applicable). The average total bill prices were \$`r round(avg_bill_trt,2)` for the treatment group and \$`r round(avg_bill_ctl,2)` for the control group. This means that on average, the tipping group spent more money but was thought the cost was more reasonable. However, a t-test on the difference in bill prices between the two groups gives a p-value of `r pval_price_diff` meaning we cannot conclude that the bill prices were significantly different between the two groups.
+Figure 5 shows the total bill prices including meal, 7% tax, and tip (if applicable). The average total bill prices were \$`r round(avg_bill_trt,2)` for the treatment group and \$`r round(avg_bill_ctl,2)` for the control group. This means that on average, the tipping group spent more money but was thought the cost was more reasonable. However, a t-test on the difference in bill prices between the two groups gives a p-value of `r pval_price_diff` meaning we cannot conclude that the bill prices were significantly different between the two groups.
 
 
-## Conclusion
+# Conclusion
 
-Our initial hypothesis was that subjects would be less satisfied with all-inclusive pricing than standard tipping pricing, and we believe the data support that position. The regression model including all major covariates showed only two fields to be significant in predicting the subjects' views on meal price reasonableness: baseline meal spending and the treatment of all-inclusive pricing. The former seems consistent in that those higher spending may have had budgets beyond our meal pricing, and the latter supports our theory with the greatest coefficient in the model. We received further confirmation in the lack of significant difference in average meal price between treatment and contro, indicating that while the groups had similar spending habits, their customer satisfaction levels with pricing were indeed different. 
+Our initial hypothesis was that subjects would be less satisfied with all-inclusive pricing than standard tipping pricing, and we believe the data support that position. Our hypothesis was supported by linear modeling, randomization inference, and a Chi-squared test. The regression model including all major covariates showed only two fields to be significant in predicting the subjects' views on meal price reasonableness: baseline meal spending and the treatment of all-inclusive pricing. The former seems consistent in that those higher spending may have had budgets beyond our meal pricing, and the latter supports our theory with the greatest coefficient in the model. We received further confirmation in the lack of significant difference in average meal price between treatment and control, indicating that while the groups had similar spending habits, their customer satisfaction levels with pricing were indeed different. 
