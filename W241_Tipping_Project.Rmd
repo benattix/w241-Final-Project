@@ -4,6 +4,7 @@ author: "Ben Attix, Chris Beecroft, Brock Kowalchuk, Matthew Burke"
 output:
   pdf_document: default
   html_document: default
+fontsize: 11pt  
 ---
 ```{r setup, include=FALSE}
 setwd("~/Desktop/w241/w241-Final-Project/")
@@ -58,9 +59,11 @@ names(df)[names(df) == "Q5"] = "baseline_spend"
 names(df)[names(df) == "Q26"] = "baseline_tip_pct"
 names(df)[names(df) == "Q1_1"] = "baseline_eat_out" 
 
-########################################################################################
-####### Create new variables which contains values for both treatment and control ###### 
-#### Due to Qualtrics, the treatment and control answers start in different variables ##
+##########################################################
+## Create new variables which contains 
+## values for both treatment and control
+###### Due to Qualtrics, the treatment and control 
+###### answers start in different variables 
 
 # Q7 and Q31 - Meals
 df$meal_ordered = ifelse(df$Q7 == "", df$Q31, df$Q7)
@@ -109,7 +112,7 @@ df$Q4_wine = ifelse(grepl("Wine", df$Q4, ignore.case = T), 1, 0)
 
 Does all-inclusive (tax + tip) pricing at restaurants impact the customer perception of value?
 
-## Introduction
+# Introduction
 
 Tipping varies around the world from countries such as Australia where tipping is not practiced, to countries such as Germany where rounding the bill up to the nearest Euro is the norm.  In the US, the expectation for tipping has slowly climbed from 10 to 15 to 18 to 20 percent over the past 100 years [^1].  Often a mandatory tip is added for large groups and some high-end restaurants automatically add an 18% experience or service charge.  While the idea of giving a small gratuity for services is old, the roots of modern US tipping practices go back to the post-Civil War era.  According to Saru Jayaraman of the Food Labor Research Center, UC Berkeley, tipping started as a way for train operators to avoid paying the newly-freed slaves and still have them earn an income [^2].  This practice continues today with the alternate minimum wage that restaurant owners are allowed to pay their staff on the premise that tips will make up the difference.
 
@@ -126,13 +129,13 @@ A small number of restaurants in cities such as San Francisco, Berkeley, and New
 
 [^4]: Sutton, R. (2015-10-14).  Danny Meyer is eliminating all tipping at his restaurants and significantly raising prices to make up the difference, a move that will raise wages, save the hospitality industry, and forever change how diners dine.    New York Eater.  Retrieved from https://ny.eater.com/2015/10/14/9517747/danny-meyer-no-tipping-restaurants on 2017-05-02.
 
-## Experiment
+# Experiment
 
-At the start of our experimental design phase, we researched Bay Area restaurants that were offering all-inclusive pricing and reached out to a few restaurateurs we knew.  Asking a restaurant to randomly select patrons to give them separately priced menus or to switch up nights that they used one system or another seemed problematic.   We opted instead for a restaurant experience “thought experiment” design that would use a Qualtrics survey (see appendix) driven by subjects from Amazon Turk.
+At the start of our experimental design phase, we researched Bay Area restaurants that were offering all-inclusive pricing and reached out to a few restaurateurs we knew.  Asking a restaurant to randomly select patrons to give them separately priced menus or to switch up nights that they used one system or another seemed problematic.   We opted instead for a restaurant experience “thought experiment” design that would use a Qualtrics survey (see appendix) driven by subjects from Amazon Mechanical Turk.
 
-### Qualtrics Survey
+## Qualtrics Survey
 
-In brief, the survey design was to ask a few questions about the subject’s dining habits (appendix, page 1), then randomly assign the subject to the control or treatment group, where they would be presented with a menu of drink and food options (page 2).  They would then be presented with a bill and asked for a tip if they were in the control group (page 3).  They were shown the total bill amount and were asked if they felt the cost was reasonable (page 4).  They were then shown a final set of questions (page 5), and then the completion page with their Amazon Turk code (page 6).  Below is the flow of the survey with control being on the left and treatment on the right.  The survey page numbers are called out on the left side for reference.
+In brief, the survey design was to ask a few questions about the subject’s dining habits (appendix, page 1), then randomly assign the subject to the control or treatment group, where they would be presented with a menu of drink and food options (page 2).  They would then be presented with a bill and asked for a tip if they were in the control group (page 3).  They were shown the total bill amount and were asked if they felt the cost was reasonable (page 4).  They were then shown a final set of questions (page 5), and then the completion page with their Mechanical Turk code (page 6).  Below is the flow of the survey with control being on the left and treatment on the right.  The survey page numbers are called out on the left side for reference.
 
 <center>![flow](flow.png)</center>
 
@@ -158,13 +161,13 @@ We ended the treatment page with the text “Hospitality and tax included.”  T
 
 Since the cost of food and restaurants is quite varied across the United States, we also wanted to limit participation to only a few urban areas.
 
-### Amazon Turk
+## Amazon Mechanical Turk
 
-With Amazon Turk, we set up a task with the description: “Let us know your experience and preference at restaurants (3-5 minute survey).”  While Qualtrics estimated the survey should take 6 minutes, the mean survey time was just over 2 minutes.   The task was offered at $ 0.30, which would place a 2-minute subject above the national minimum wage.
+With Amazon Mechanical Turk, we set up a task with the description: “Let us know your experience and preference at restaurants (3-5 minute survey).”  While Qualtrics estimated the survey should take 6 minutes, the mean survey time was just over 2 minutes.   The task was offered at $ 0.30, which would place a 2-minute subject above the national minimum wage.
 
-For our pilot studies we were able to quickly get the requested number of subjects, but for the actual survey, the $ 0.30 was on the low side, and it took twenty days before we decided to end the survey.   We had planned to stop after 330 responses (300 responses and a 10% overage for the inevitable re-takers from the pilot surveys).  The survey started on April 5th and only garnered three responses after three days.  We realized that we had one of the restrictions backwards (limit to users who have 0 tasks completed, switched to users who have more than 0 tasks completed). We restarted the survey on the 8th before finally deciding on Thursday April 20th to end the survey on Sunday April 23rd.  We did contemplate raising the price but felt that this would affect the results of the survey.  From these two sets we received 263 responses.
+For our pilot studies we were able to quickly get the requested number of subjects, but for the actual survey, the $ 0.30 was on the low side, and it took twenty days before we decided to end the survey.  We had planned to stop after 330 responses (300 responses and a 10% overage for the inevitable re-takers from the pilot surveys).  The survey started on April 5th and only garnered three responses after three days.  We realized that we had one of the restrictions backwards (limit to users who have 0 tasks completed, switched to users who have more than 0 tasks completed). We restarted the survey on the 8th before finally deciding on Thursday April 20th to end the survey on Sunday April 23rd.  We did contemplate raising the price but felt that this would affect the results of the survey.  From these two sets we received 263 responses.
 
-Finally we set up Amazon Turk to limit data to California, New York, Pennsylvania, and Washington D.C.  Unfortunately Amazon Turk does not provide a more fine-grained selection of areas, so we targeted high-population states as a proxy for urban areas.  The validation of the region selection data was done as one of our final pilots where we collected 30 subjects on April 3rd to validate that the region selections were working correctly.  During validation of the area restriction pilot, we examined the latitude and longitude in the data set to verify that subjects were in our target areas.  No other data was reviewed.  These were included to make up for the unreached number.
+Finally we set up Mechanical Turk to limit data to California, New York, Pennsylvania, and Washington D.C.  Unfortunately Mechanical Turk does not provide a more fine-grained selection of areas, so we targeted high-population states as a proxy for urban areas.  The validation of the region selection data was done as one of our final pilots where we collected 30 subjects on April 3rd to validate that the region selections were working correctly.  During validation of the area restriction pilot, we examined the latitude and longitude in the data set to verify that subjects were in our target areas.  No other data was reviewed.  These were included to make up for the unreached number.
 
 ## Research Design (RXO Grammar)
 
@@ -195,23 +198,9 @@ Please note that our outcome variable of the subject's impression of meal price 
 
 Over the span of this course we have used two different methods, linear modeling and randomization inference, to test whether our treatment variable had an effect on our outcome variable. In this section we will present our results using both of these methods as well as a Chi-squared test. Even though we did not discuss Chi-squared tests in this course, we are including it because it is designed for analyzing categorical variables, which we have this experiment.
 
-First, Figure 1 shows the distribution of responses by treatment group. The average ratings were 3.29 for the treatment group and 3.76 for the control group giving us an average treatment effect of -0.47 before controlling for any other factors.
+Figure 1 shows the distribution of responses by treatment group. The average ratings were 3.29 for the treatment group and 3.76 for the control group giving us an average treatment effect of -0.47 before controlling for any other factors.
 
-```{r, fig.height=6, echo=FALSE}
-# Hisograms of Reasonable Score
-# histogram(~ reasonable | levels(treat), data = df,
-#           main  = "Figure 1",
-#           xlab = "Rating",
-#           scales = list(x=list(labels=c("", "Very\nUnreasonable",
-#                                         "Somewhat\nUnreasonable",
-#                                         "Neither Reasonable\nnor Unreasonable",
-#                                         "Somewhat\nReasonable",
-#                                         "Very\nReasonable")), 
-#                                               rot = 45,
-#                                               cex = 0.7,
-#                                               alternating = FALSE),
-#           col = "steelblue")
-
+```{r, echo=FALSE}
 # Hisograms of Reasonable Score
 histogram(~ reasonable | levels(treat), data = df,
           main  = "Figure 1",
@@ -230,7 +219,9 @@ histogram(~ reasonable | levels(treat), data = df,
 
 ## Linear Modeling
 
-Linear modeling allows us estimate the effect of our treatment variable while also controlling for covariates that may have played a role as well. 
+Linear modeling allows us estimate the effect of our treatment variable while also controlling for covariates that may have played a role as well. \autoref{reasonableness_rating} shows three different models of our data. The first model is our "naive" model which uses treatment as the only predictor. The second model includes baseline spending, which is how much the respondent normally spends per person when going out to dinner. Finally, the third model adds in the number of times they normally eat out per month as well as fixed effects for age, gender, who they normally eat with, what courses they normally order, and what drinks they typically order. The third model includes all of the possible covariates that we could have included in our model in order to test whether anything would make a difference in the magnitude or standard error of our treatment estimate. These additional covariates did not do anything for the model and actually made the standard error larger.
+
+Our best model is the second one, because it has the lowest standard error for the treatment variable and it has the highest adjusted R^2^. This model shows us an average treatment effect of -0.383 (standard error of 0.129) and a p-value of 0.004. Baseline spending is a significant covariate, but the effect size is only 0.024 or roughly 6% of the size of our treatment effect. Another things to note is that each model shows a statistically significant treatment effect and an ATE between -0.38 and -0.47. Since each model gave such similar results for the ATE, this is a good sign that our treatment truly had an effect and what we're seeing is not due to a poor model.
 
 \pagebreak
 ```{r, echo=FALSE, results="asis", warning=FALSE}
@@ -253,8 +244,7 @@ stargazer(model_naive, model1, model2,
           covariate.labels=c("Treatment", 
                              "Baseline Spending", 
                              "Num Times Eat Out Per Month"),
-          title = "Chart 1",
-          label = "Reasonableness Rating"
+          label = "reasonableness_rating"
           )
 ```
 
@@ -287,23 +277,24 @@ larger_ates_count = length(ate.outcomes[abs(ate.outcomes) >= abs(observed_ate)])
 p_value = larger_ates_count / 100000
 ```
 
-We used randomization inference to simulate 100,000 different treatment assignments, and therefore 100,000 different treatment estimates, from our data. This yielded us with a p-value of **0.00097** meaning we would have less than 0.1% chance of observing our treatment effect by random chance. 
+We used randomization inference to simulate 100,000 different treatment assignments, and therefore 100,000 different treatment estimates. This yielded us with a p-value of *0.00097* meaning we would have less than a 0.1% chance of observing our treatment effect by random chance. 
 
 ## Chi-Squared Test
 
 Chi-Square tests are used for categorical data to determine if there is a difference between various groups. Since our outcome measure is a Likert-scale rating, it is an ordered category and not a truly continuous variable. Therefore, the Chi-Square test is an appropriate test for our data.
 
-```{r, echo=FALSE, warning=FALSE, results="asis"}
+```{r, echo=FALSE, warning=FALSE}
 # Pander
-chisq.test(table(df$treat, df$reasonable) )
-# fisher.test(table(df$treat, df$reasonable) )
+ReasonablenessRating = df$reasonable
+Treatment = df$treat
+chisq.test(table(ReasonablenessRating, Treatment) )
 ```
 
-__EXPAND ON RESULTS HERE__
+The results of our Chi-squared test further confirm what we saw in the linear models and randomization inference. With a p-value of 0.02, we reject the null hypothesis that the responses from the treatment and control groups are independent. To say that another way, the treatment and control outcomes have a different distribution and therefore the treatment itself changed the potential outcomes from one distribution of satisfaction to a different distribution.
 
 ## Overall Bill Price
 
-One concern we had was that maybe people in the tipping group would decide to leave very small tips. With no ramifications for leaving a bad tip, they could decide to go that route and that would potentially influence our results. In Figure 2, we show the distribution of tip percentages left by respondents. There are a couple questionable values but overall the distribution of tip percentages looks good. The mean tip percentage is 18.7% (95% confidence interal of 17.7% - 19.8%) which is fairly normal therefore we feel that respondents treated the tips like they would in a normal restaurant setting. 
+One concern we had was that maybe people in the tipping group would decide to leave very small tips. With no ramifications for leaving a bad tip, they could decide to go that route and it would potentially influence our results. In Figure 2, we show the distribution of tip percentages left by respondents. There are a couple questionable values but overall the distribution of tip percentages looks good. The mean tip percentage is 18.7% (95% confidence interal of 17.7% - 19.8%) which is fairly normal therefore we feel that respondents treated the tips like they would in a normal restaurant setting. 
 
 ```{r, echo=FALSE}
 # Hisograms of Tipping Percentage
