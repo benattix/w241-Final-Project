@@ -155,7 +155,7 @@ We ended the treatment page with the text “Hospitality and tax included.”  T
 
 **Page 4** does not differ between Control and Treatment.  The two are broken out here to show the cost difference between the flows.
 
-**Page 5**:  After our initial pilot study, we found that some participants were clicking through the survey in 30 seconds or less.  At the recommendation of the Qualtrics user guide, we added the question, “If you live in the U.S. select strongly agree.”  We also added questions on gender, age, and average tip amount in the hope of making this question less obvious to subjects that clicked through the survey.
+**Page 5**:  After our initial pilot study, we found that some participants were clicking through the survey in 30 seconds or less.  At the recommendation of the Qualtrics user guide, we added the question, “If you live in the U.S. select strongly agree”. Since we set location restrictions and only included people in the U.S. that means everyone should have selected "strongly agree". For people who did not choose "strongly agree", we can conclude that they were not paying attention to the survey and therefore we excluded their responses.   We also added questions on gender, age, and average tip amount in the hope of making this question less obvious to subjects that clicked through the survey.
 
 **Page 6** is the end of the survey.
 
